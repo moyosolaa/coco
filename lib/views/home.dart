@@ -67,14 +67,30 @@ class ExplorerView extends StatelessWidget {
                             itemCount: _controller.results.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
-                                margin: const EdgeInsets.symmetric(vertical: 10),
-                                height: 300,
+                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                // height: 300,
                                 // width: 100,
                                 alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: Colors.blueGrey,
-                                  image: DecorationImage(image: NetworkImage(_controller.results[index]), fit: BoxFit.contain),
-                                  borderRadius: BorderRadius.circular(10),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 300,
+                                      child: Image.network(
+                                        _controller.results[index],
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text('Caption: ' + _controller.resultCaptions[index]),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    const Divider(
+                                      thickness: 2,
+                                    ),
+                                  ],
                                 ),
                               );
                             },
