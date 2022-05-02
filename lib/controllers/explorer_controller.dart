@@ -1,14 +1,17 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:coco/models/categories.dart';
+import 'package:coco/state_notifier.dart';
 import 'package:coco/views/loader.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 
-class ExplorerController extends GetxController {
-  RxList<dynamic> results = [].obs;
+class ExplorerController extends StateNotifier {
+  List<dynamic> results = [];
   List<dynamic> selectedItems = [];
+  List<dynamic> selectedItemsID = [];
 
   final itemss = superCategories.map((e) => MultiSelectItem<SuperCats>(e, e.name)).toList();
 
@@ -19,6 +22,15 @@ class ExplorerController extends GetxController {
 
   void onSelectItem(val) {
     selectedItems = val.map((e) => e.name).toList();
+    selectedItemsID = val.map((e) => e.id).toList();
+    update();
+  }
+
+  void removeItem(val) {
+    var a = selectedItems.indexWhere((e) => e == val.name);
+    selectedItems.removeAt(a);
+    selectedItemsID.removeAt(a);
+    update();
   }
 
   Future<void> searchResult() async {
@@ -26,22 +38,20 @@ class ExplorerController extends GetxController {
     var res = await http.Client().post(
       Uri.parse('https://us-central1-open-images-dataset.cloudfunctions.net/coco-dataset-bigquery'),
       headers: headers,
-      body: jsonEncode({'category_ids': selectedItems, 'querytype': 'getImagesByCats'}),
+      body: jsonEncode({'category_ids': selectedItemsID, 'querytype': 'getImagesByCats'}),
     );
     var resultDecoded = jsonDecode(res.body);
-    print('dfffffffffffffffffffffssssssssssssssssssssssf');
-    print(resultDecoded.toString());
 
     var response = await http.Client().post(
       Uri.parse('https://us-central1-open-images-dataset.cloudfunctions.net/coco-dataset-bigquery'),
       headers: headers,
-      body: {'image_ids': resultDecoded[0], 'querytype': 'getImages'},
+      body: jsonEncode({'image_ids': resultDecoded, 'querytype': 'getImages'}),
     );
-    var imagesResponse = jsonDecode(response.body);
-    print('zzzzzzzzzzzzzzzzzzzzzzzzzzzzz');
-    print(imagesResponse.toString());
+    List<dynamic> imagesResponse = jsonDecode(response.body);
 
-    results = imagesResponse;
+    results = imagesResponse.map((e) => e['coco_url']).toList();
+    log(results.toString());
+    update();
     Get.back();
   }
 }

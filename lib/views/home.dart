@@ -6,7 +6,6 @@ import '../controllers/explorer_controller.dart';
 
 class ExplorerView extends StatelessWidget {
   const ExplorerView({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,15 +28,11 @@ class ExplorerView extends StatelessWidget {
                   buttonIcon: const Icon(Icons.arrow_drop_down),
                   searchable: true,
                   buttonText: const Text("Select Items"),
-                  title: const Text(""),
+                  title: const Text("Select Items"),
                   items: _controller.itemss,
                   onConfirm: (values) => _controller.onSelectItem(values),
                   chipDisplay: MultiSelectChipDisplay(
-                    onTap: (value) {
-                      // setState(() {
-                      //   _selectedAnimals2.remove(value);
-                      // });
-                    },
+                    onTap: (value) => _controller.removeItem(value),
                   ),
                 ),
                 const SizedBox(
@@ -63,23 +58,28 @@ class ExplorerView extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: _controller.results.isEmpty
-                      ? const Text('Select and submit, before display result')
-                      : ListView.builder(
-                          itemCount: 1,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: Colors.blueGrey,
-                                image: DecorationImage(image: NetworkImage(_controller.results[index]["coco_url"]), fit: BoxFit.cover),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            );
-                          },
-                        ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: _controller.results.isEmpty
+                        ? const Text('No Items Found!!!!')
+                        : ListView.builder(
+                            itemCount: _controller.results.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                margin: const EdgeInsets.symmetric(vertical: 10),
+                                height: 300,
+                                // width: 100,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: Colors.blueGrey,
+                                  image: DecorationImage(image: NetworkImage(_controller.results[index]), fit: BoxFit.contain),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
                 ),
               ],
             ),
