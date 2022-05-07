@@ -62,7 +62,7 @@ class ExplorerView extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: _controller.results.isEmpty
-                        ? const Text('No Items Found!!!!')
+                        ? const Text('No Items Found, select an item and click search!!!!')
                         : ListView.builder(
                             itemCount: _controller.results.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -78,6 +78,17 @@ class ExplorerView extends StatelessWidget {
                                       child: Image.network(
                                         _controller.results[index],
                                         fit: BoxFit.fill,
+                                        loadingBuilder: (context, child, loadingProgress) {
+                                          if (loadingProgress == null) {
+                                            return child;
+                                          }
+                                          return Center(
+                                            child: CircularProgressIndicator(
+                                              color: Colors.blue,
+                                              value: (loadingProgress != null) ? (loadingProgress.cumulativeBytesLoaded / num.parse(loadingProgress.expectedTotalBytes.toString())) : 0,
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
                                     const SizedBox(

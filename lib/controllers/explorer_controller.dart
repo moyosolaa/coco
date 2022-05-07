@@ -10,19 +10,20 @@ import 'package:http/http.dart' as http;
 import 'package:multi_select_flutter/util/multi_select_item.dart';
 
 class ExplorerController extends StateNotifier {
-  List<dynamic> results = [];
-  List<dynamic> resultCaptions = [];
-  List<dynamic> selectedItems = [];
-  List<dynamic> selectedItemsID = [];
-
-  final itemss = superCategories.map((e) => MultiSelectItem<SuperCats>(e, e.name)).toList();
-
   Map<String, String> headers = {
     "content-type": "application/json; charset=UTF-8",
     "accept": "application/json",
   };
 
+  final itemss = superCategories.map((e) => MultiSelectItem<SuperCats>(e, e.name)).toList();
+  List<dynamic> resultCaptions = [];
+  List<dynamic> results = [];
+  List<dynamic> selectedItems = [];
+  List<dynamic> selectedItemsID = [];
+
   void onSelectItem(val) {
+    results.clear();
+    resultCaptions.clear();
     selectedItems = val.map((e) => e.name).toList();
     selectedItemsID = val.map((e) => e.id).toList();
     update();
